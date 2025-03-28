@@ -9,11 +9,6 @@ Linux_UI.Name = "Linux_UI"
 Linux_UI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 Linux_UI.Parent = game.CoreGui
 
-local NotificationGui = Instance.new("ScreenGui")
-NotificationGui.Name = "NotificationGui"
-NotificationGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-NotificationGui.Parent = game.CoreGui
-
 local Library = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -192,8 +187,10 @@ function Library:Create(table)
             minimizeButton.Image = "rbxassetid://10734895698"
             isMinimized = false
         else
-            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(500, 35)}):Play()
-            contentFrame.Visible = false
+            TweenService:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.fromOffset(500, 35)}):Play()
+            task.delay(0.3, function()
+                contentFrame.Visible = false
+            end)
             minimizeButton.Image = "rbxassetid://10734886735"
             isMinimized = true
         end
@@ -207,62 +204,6 @@ function Library:Create(table)
             tabHandler:Exit()
         end
     end)
-
-    function tabHandler:Notification(titleText, descText, duration)
-        local notification = Instance.new("Frame")
-        local uICorner = Instance.new("UICorner")
-        local title = Instance.new("TextLabel")
-        local description = Instance.new("TextLabel")
-
-        notification.BackgroundColor3 = theme.MainBackground
-        notification.BackgroundTransparency = 1
-        notification.Position = UDim2.fromScale(0.9, 0.85)
-        notification.Size = UDim2.fromOffset(250, 80)
-        notification.Parent = NotificationGui
-
-        uICorner.CornerRadius = UDim.new(0, 8)
-        uICorner.Parent = notification
-
-        title.Font = Enum.Font.GothamBold
-        title.Text = titleText or "Notification"
-        title.TextColor3 = theme.TabButtonActive
-        title.TextSize = 16
-        title.TextXAlignment = Enum.TextXAlignment.Left
-        title.BackgroundTransparency = 1
-        title.Position = UDim2.fromOffset(10, 5)
-        title.Size = UDim2.fromOffset(230, 20)
-        title.Parent = notification
-
-        description.Font = Enum.Font.Gotham
-        description.Text = descText or "Description here"
-        description.TextColor3 = theme.ElementText
-        description.TextSize = 14
-        description.TextXAlignment = Enum.TextXAlignment.Left
-        description.TextWrapped = true
-        description.BackgroundTransparency = 1
-        description.Position = UDim2.fromOffset(10, 25)
-        description.Size = UDim2.fromOffset(230, 50)
-        description.Parent = notification
-
-        local tweenIn = TweenService:Create(notification, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-            Position = UDim2.fromScale(0.65, 0.85),
-            BackgroundTransparency = 0
-        })
-        local tweenOut = TweenService:Create(notification, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-            Position = UDim2.fromScale(0.9, 0.85),
-            BackgroundTransparency = 1
-        })
-
-        tweenIn:Play()
-        tweenIn.Completed:Wait()
-
-        task.wait(duration or 3)
-
-        tweenOut:Play()
-        tweenOut.Completed:Connect(function()
-            notification:Destroy()
-        end)
-    end
 
     function tabHandler:Tab(name, iconId)
         local main1 = Instance.new("TextButton")
